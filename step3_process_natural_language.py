@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 import re
 
-from book_text_recognizer.utilities import get_arguments
+from book_text_recognizer.utils import get_arguments
 
 pd.options.display.max_colwidth = 100
 
