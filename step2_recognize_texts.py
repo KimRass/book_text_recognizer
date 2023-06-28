@@ -10,7 +10,7 @@ from pathlib import Path
 import json
 from tqdm.auto import tqdm
 
-from book_text_recognizer.utilities import get_arguments
+from book_text_recognizer.utils import get_arguments
 from process_images import _dilate_image
 
 
