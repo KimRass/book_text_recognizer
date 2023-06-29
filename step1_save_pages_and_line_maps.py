@@ -1,34 +1,40 @@
+import torch
 from pdf2image import convert_from_path
 from pathlib import Path
 from tqdm.auto import tqdm
+import argparse
 
-from libs.image.craft_utilities import (
-    load_craft_checkpoint,
-    load_craft_refiner_checkpoint,
-    get_text_map_link_map_and_line_map
-)
+from craft.detect_text import load_craft_checkpoint, load_link_refiner_checkpoint, get_score_maps
 from process_images import _to_array, save_image
-from book_text_recognizer.utils import get_arguments
+
+
+def get_args():
+    parser = argparse.ArgumentParser("OCR")
+
+    parser.add_argument("--pdf_path")
+
+    args = parser.parse_args()
+    return args
 
 
 def main():
-    args = get_arguments()
+    args = get_args()
 
-    text_detector = load_craft_checkpoint(cuda=args.cuda)
-    refiner = load_craft_refiner_checkpoint(cuda=args.cuda)
+    cuda = torch.cuda.is_available()
 
-    for idx, img in enumerate(
-        tqdm(
-            list(convert_from_path(args.pdf))
-        )
-    ):
+    craft = load_craft_checkpoint(cuda=cuda)
+    link_refiner = load_link_refiner_checkpoint(cuda=cuda)
+
+    # pdf_path = "/Users/jongbeomkim/Downloads/document_text_recognition/scanned2.pdf"
+    for idx, img in enumerate(tqdm(list(convert_from_path(args.pdf_path)))):
         img = _to_array(img)
-        save_image(img=img, path=Path(args.pdf).parent/f"image/{str(idx).zfill(3)}.png")
-
-        _, _, map_line = get_text_map_link_map_and_line_map(
-            img=img, text_detector=text_detector, refiner=refiner, cuda=args.cuda
+        save_image(
+            img=img, path=Path(args.pdf_path).parent/f"pages/{str(idx).zfill(3)}.png"
         )
-        save_image(img=map_line, path=Path(args.pdf).parent/f"line_map/{str(idx).zfill(3)}.png")
+        _, _, line_score_map = get_score_maps(img, craft=craft, link_refiner=link_refiner, cuda=cuda)
+        save_image(
+            img=line_score_map, path=Path(args.pdf_path).parent/f"line_score_maps/{str(idx).zfill(3)}.png"
+        )
 
 
 if __name__ == "__main__":
