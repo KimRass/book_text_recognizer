@@ -2,15 +2,13 @@ import pandas as pd
 from pathlib import Path
 import re
 
-from book_text_recognizer.utils import get_arguments
+from book_text_recognizer.utils import get_args
 
 pd.options.display.max_colwidth = 100
 
 
 def get_page(text):
-    return int(
-        re.search(pattern=r"^\d{3}|\d{3}?", string=text).group()
-    )
+    return int(re.search(pattern=r"^\d{3}|\d{3}?", string=text).group())
 
 
 def exclude_block_with_one_row(df):
@@ -20,10 +18,10 @@ def exclude_block_with_one_row(df):
     return df
 
 
-def concatenate_df(dir):
+def concatenate_dfs(dir):
     max_block = 0
     ls_df = list()
-    for path in sorted(list(Path(dir).glob("*.xlsx"))):
+    for path in sorted(Path(dir).glob("*.xlsx")):
         if path.stem[: 2] != "~$":
             df = pd.read_excel(path)
 
@@ -58,11 +56,7 @@ def exclude_titles(df):
 
 
 def replace_dot_with_at_sign(texts):
-    return re.sub(
-        pattern=r"([a-zA-Z0-9])\.",
-        repl=r"\1@",
-        string=texts
-    )
+    return re.sub(pattern=r"([a-zA-Z0-9])\.", repl=r"\1@", string=texts)
 
 
 def split_into_sentences(text):
@@ -74,17 +68,12 @@ def split_into_sentences(text):
 
 
 def replace_at_sign_with_dot(texts):
-    return re.sub(
-        pattern=r"([a-zA-Z0-9])@",
-        repl=r"\1.",
-        string=texts
-    )
+    return re.sub(pattern=r"([a-zA-Z0-9])@", repl=r"\1.", string=texts)
 
 
 def get_speaker_and_content(text):
     match = re.search(
-        pattern=r"""(^[가-힣 ]+:)([ㄱ-ㄴㅏ-ㅣ가-힣a-zA-Z0-9,:@()'".!? ]+)""",
-        string=text
+        pattern=r"""(^[가-힣 ]+:)([ㄱ-ㄴㅏ-ㅣ가-힣a-zA-Z0-9,:@()'".!? ]+)""", string=text
     )
     if match:
         speaker = match.group(1).replace(":", "").strip()
@@ -102,15 +91,17 @@ def get_speaker_and_content(text):
             "원 원 고": "원원고"
         }.get(speaker, speaker)
 
-        return pd.Series([speaker, match.group(2)])
+        # return pd.Series([speaker, match.group(2)])
+        speaker, match.group(2)
     else:
-        return pd.Series([None, text])
+        # return pd.Series([None, text])
+        None, text
 
 
 def main():
-    args = get_arguments()
+    args = get_args()
 
-    df = concatenate_df(Path(args.pdf).parent/"text_recognition")
+    df = concatenate_dfs(args.save_dir)
     df = df[~df["text"].str.startswith("□")]
 
     df = merge_by_block(df)
@@ -133,7 +124,7 @@ def main():
             )
     df = pd.DataFrame(ls_row, columns=["page", "text", "spoken_or_written"])
     
-    df[["speaker", "content"]] = df["text"].apply(get_speaker_and_content)
+    df[["speaker", "content"]] = df["text"].apply(get_speaker_and_content, result_type="expand")
     df["speaker"] = df["speaker"].fillna(method="ffill")
     df.loc[df["spoken_or_written"] == "written", "speaker"] = "-"
     
@@ -141,7 +132,7 @@ def main():
     
     df.drop(["text", "spoken_or_written"], axis=1, inplace=True)
 
-    df.to_excel(Path(args.pdf).parent/"ocr_result.xlsx", index=False)
+    df.to_excel(Path(args.save_dir)/"ocr_result.xlsx", index=False)
     
     
 if __name__ == "__main__":
