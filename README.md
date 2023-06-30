@@ -4,18 +4,18 @@
 - 책을 pdf 파일의 형태로 준비합니다.
 - pdf 파일의 각 페이지를 png 파일로 저장합니다.
 - 269 페이지 이미지
-    - <img src="https://i.imgur.com/HlRJnwg.jpg" width="500">
+    - <img src="https://i.imgur.com/HlRJnwg.jpg" width="600">
 ## Step 2
 - 각 페이지에 대해 'CRAFT' text detector를 사용해 Line score map을 생성하고 저장합니다.
 - Line score map
-    - <img src="https://i.imgur.com/4jQnSpN.png" width="500">
+    - <img src="https://i.imgur.com/4jQnSpN.png" width="600">
 ## Step 3
 - Line score map의 각 Line별로 구분하는 Line segmentation map과 블록 단위로 구분하는 Block segmentation map을 생성합니다.
 - Block segmentation map이 필요한 이유는 대화문이 어디서 시작하고 끝나는지 파악하기 위함입니다. Block segmentation map이 없다면 하나의 발화문 또는 비대화문이 2개 이상의 페이지에 걸쳐 연속될 때 발화자를 파악하기 어렵습니다.
 - Line segmentation map
-    - <img src="https://i.imgur.com/CzMb18y.png" width="500">
+    - <img src="https://i.imgur.com/CzMb18y.png" width="600">
 - Block segmentation map
-    - <img src="https://i.imgur.com/H2DXlZP.png" width="500">
+    - <img src="https://i.imgur.com/H2DXlZP.png" width="600">
 - CLOVA OCR API를 통해 텍스트를 인식합니다.
 - CLOVA OCR 결과
     |block|line|text|
