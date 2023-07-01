@@ -1,12 +1,13 @@
 # Process
 - [[사법 통역의 이론과 실제]](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=105588449)라는 책을 예로 들어 진행해 보겠습니다.
 ## Step 1
+- ['CRAFT' text detector의 공식 레포지토리](https://github.com/clovaai/CRAFT-pytorch)에서 pre-trained models 'craft_mlt_25k.pth', 'craft_refiner_CTW1500.pth'를 다운받아 'craft' 폴더에 넣습니다.
 - 책을 pdf 파일의 형태로 준비합니다.
 - pdf 파일의 각 페이지를 png 파일로 저장합니다.
 - 269 페이지 이미지
     - <img src="https://i.imgur.com/HlRJnwg.jpg" width="600">
 ## Step 2
-- 각 페이지에 대해 'CRAFT' text detector를 사용해 Line score map을 생성하고 저장합니다.
+- 각 페이지에 대해 'CRAFT'를 사용해 Line score map을 생성하고 저장합니다.
 - Line score map
     - <img src="https://i.imgur.com/4jQnSpN.png" width="600">
 ## Step 3
