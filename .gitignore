@@ -9,4 +9,4 @@ craft/craft_mlt_25k.pth
 craft/craft_refiner_CTW1500.pth
 pyvenv.cfg
 share/
-api_url.txt
+secret_key.txt
