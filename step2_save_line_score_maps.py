@@ -3,7 +3,7 @@ from pathlib import Path
 from tqdm.auto import tqdm
 
 from utils import get_args
-from craft.detect_text import load_craft_checkpoint, load_link_refiner_checkpoint, get_score_maps
+from craft.craft_utils import load_craft_checkpoint, load_link_refiner_checkpoint, get_score_maps
 from image_utils import load_image, save_image
 
 
