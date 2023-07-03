@@ -3,7 +3,7 @@ from pathlib import Path
 from tqdm.auto import tqdm
 
 from utils import get_args
-from process_images import _to_array, save_image
+from image_utils import _to_array, save_image
 
 
 def main():

@@ -10,7 +10,7 @@ import json
 from tqdm.auto import tqdm
 
 from book_text_recognizer.utils import get_args
-from process_images import load_image, _dilate_image
+from image_utils import load_image, _dilate_image
 
 
 def get_clova_ocr_api_response_body(path):

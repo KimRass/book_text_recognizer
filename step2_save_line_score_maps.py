@@ -4,7 +4,7 @@ from tqdm.auto import tqdm
 
 from utils import get_args
 from craft.detect_text import load_craft_checkpoint, load_link_refiner_checkpoint, get_score_maps
-from process_images import load_image, save_image
+from image_utils import load_image, save_image
 
 
 def main():

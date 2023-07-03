@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as T
 
 from craft.torch_utils import _get_state_dict
-from process_images import _get_width_and_height
+from image_utils import _get_width_and_height
 from craft.craft import CRAFT
 from craft.link_refiner import LinkRefiner
 
