@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import torch
 import torchvision.transforms as T
+from pathlib import Path
 
 from craft.torch_utils import _get_state_dict
 from image_utils import _get_width_and_height
@@ -16,8 +17,8 @@ def load_craft_checkpoint(cuda=False):
     if cuda:
         craft = craft.to("cuda")
 
-    # ckpt_path = Path(__file__).parent/"pretrained/craft.pth"
-    ckpt_path = "/Users/jongbeomkim/Desktop/workspace/book_text_recognizer/craft/craft_mlt_25k.pth"
+    ckpt_path = Path(__file__).parent/"pretrained/craft.pth"
+    # ckpt_path = "/Users/jongbeomkim/Desktop/workspace/book_text_recognizer/craft/craft_mlt_25k.pth"
     state_dict = _get_state_dict(ckpt_path=ckpt_path, include="module.", delete="module.", cuda=cuda)
     craft.load_state_dict(state_dict=state_dict, strict=True)
     craft.eval()
@@ -31,8 +32,8 @@ def load_link_refiner_checkpoint(cuda=False):
     if cuda:
         link_refiner = link_refiner.to("cuda")
 
-    # ckpt_path = Path(__file__).parent/"pretrained/link_refiner.pth"
-    ckpt_path = "/Users/jongbeomkim/Desktop/workspace/book_text_recognizer/craft/craft_refiner_CTW1500.pth"
+    ckpt_path = Path(__file__).parent/"pretrained/link_refiner.pth"
+    # ckpt_path = "/Users/jongbeomkim/Desktop/workspace/book_text_recognizer/craft/craft_refiner_CTW1500.pth"
     state_dict = _get_state_dict(ckpt_path=ckpt_path, include="module.", delete="module.", cuda=cuda)
     link_refiner.load_state_dict(state_dict=state_dict, strict=True)
     link_refiner.eval()
