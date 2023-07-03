@@ -9,7 +9,7 @@ from pathlib import Path
 import json
 from tqdm.auto import tqdm
 
-from book_text_recognizer.utils import get_args
+from utils import get_args
 from image_utils import load_image, _dilate_image
 
 
@@ -62,6 +62,7 @@ def get_center(ls):
 def response_body_to_df(resp_body, block_seg_map, line_seg_map):
     df_texts = pd.DataFrame([i for i in resp_body["images"][0]["fields"]])
     df_texts.drop(["boundingPoly"], axis=1, inplace=True)
+    df_texts.rename({"inferText": "text"}, axis=1, inplace=True)
 
     df_centers = pd.DataFrame(
         [get_center(i["boundingPoly"]["vertices"]) for i in resp_body["images"][0]["fields"]],
@@ -72,8 +73,8 @@ def response_body_to_df(resp_body, block_seg_map, line_seg_map):
     df_concated["block"] = df_concated.apply(lambda x: block_seg_map[x["y"], x["x"]], axis=1)
     df_concated["line"] = df_concated.apply(lambda x: line_seg_map[x["y"], x["x"]], axis=1)
     df_concated.sort_values(["block", "line", "x"], inplace=True)
-    
-    df_gby = df_concated.groupby(["block", "line"])["inferText"].apply(list).apply(lambda x: " ".join(x))
+
+    df_gby = df_concated.groupby(["block", "line"])["text"].apply(list).apply(lambda x: " ".join(x))
     df_gby = df_gby.reset_index()
     return df_gby
 
@@ -81,9 +82,14 @@ def response_body_to_df(resp_body, block_seg_map, line_seg_map):
 def main():
     args = get_args()
 
-    save_dir = "/Users/jongbeomkim/Downloads/document_text_recognition"
-    for img_path in tqdm(sorted((Path(save_dir)/"pages").glob("*.png"))):
-        line_score_map = load_image(Path(save_dir)/"line_score_maps"/img_path.name)
+    # save_dir = "/Users/jongbeomkim/Downloads/document_text_recognition"
+    for img_path in tqdm(sorted((Path(args.save_dir)/"pages").glob("*.png"))):
+        save_dir = Path(args.save_dir)/"text_recognition_result"
+        save_path = save_dir/f"{img_path.stem}.xlsx"
+        if save_path.exists():
+            continue
+
+        line_score_map = load_image(Path(args.save_dir)/"line_score_maps"/img_path.name)
 
         line_seg_map = get_line_segmentation_map(line_score_map)
         block_seg_map = get_block_segmentation_map(line_score_map)
@@ -91,8 +97,8 @@ def main():
         resp_body = get_clova_ocr_api_response_body(img_path)
         df = response_body_to_df(resp_body=resp_body, block_seg_map=block_seg_map, line_seg_map=line_seg_map)
 
-        Path(args.save_dir).mkdir(parents=True, exist_ok=True)
-        df.to_excel(Path(args.save_dir)/f"{img_path.stem}.xlsx", index=False)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        df.to_excel(save_path, index=False)
 
 
 if __name__ == "__main__":

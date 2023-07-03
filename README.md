@@ -1,16 +1,35 @@
 # Process
 - [[사법 통역의 이론과 실제]](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=105588449)라는 책을 예로 들어 진행해 보겠습니다.
 ## Step 1
+- How to run:
+    ```sh
+    # Example
+    python step1_parse_pdf_files.py\
+        --pdf_path=".../book.pdf"\
+        --save_dir="..."
+    ```
 - ['CRAFT' text detector의 공식 레포지토리](https://github.com/clovaai/CRAFT-pytorch)에서 pre-trained models 'craft_mlt_25k.pth', 'craft_refiner_CTW1500.pth'를 다운받아 'craft' 폴더에 넣습니다.
 - 책을 pdf 파일의 형태로 준비합니다.
 - pdf 파일의 각 페이지를 png 파일로 저장합니다.
 - 269 페이지 이미지
     - <img src="https://i.imgur.com/HlRJnwg.jpg" width="600">
 ## Step 2
+- How to run:
+    ```sh
+    # Example
+    python step2_save_line_score_maps.py\
+        --save_dir="..."
+    ```
 - 각 페이지에 대해 'CRAFT'를 사용해 Line score map을 생성하고 저장합니다.
 - Line score map
     - <img src="https://i.imgur.com/4jQnSpN.png" width="600">
 ## Step 3
+- How to run:
+    ```sh
+    # Example
+    python step3_recognize_texts.py\
+        --save_dir="..."
+    ```
 - Line score map의 각 Line별로 구분하는 Line segmentation map과 블록 단위로 구분하는 Block segmentation map을 생성합니다.
 - Block segmentation map이 필요한 이유는 대화문이 어디서 시작하고 끝나는지 파악하기 위함입니다. Block segmentation map이 없다면 하나의 발화문 또는 비대화문이 2개 이상의 페이지에 걸쳐 연속될 때 발화자를 파악하기 어렵습니다.
 - Line segmentation map
@@ -49,6 +68,12 @@
     |4|26|외국인: 아뇨, 친구예요.|
     |5|27|7장 형사사건 통역 267|
 ## Step 4
+- How to run:
+    ```sh
+    # Example
+    python step4_postprocess.py\
+        --save_dir="..."
+    ```
 - 다음과 같은 후처리 작업을 진행합니다. 대상이 되는 책에 따라 서로 다른 후처리 방법을 사용합니다.
     - 페이지 제거
     - 제목 제외
